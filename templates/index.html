@@ -115,6 +115,23 @@
             font-family: monospace;
             box-shadow: inset 0 0 8px rgba(0,255,0,0.2);
         }
+        
+        .input-box select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: #111;
+            color: #0f0;
+            font-family: monospace;
+            box-shadow: inset 0 0 8px rgba(0,255,0,0.2);
+        }
+
+.input-box select:focus {
+    box-shadow: 0 0 12px #00ffcc;
+}
 
         .input-box input:focus {
             box-shadow: 0 0 12px #00ffcc;
@@ -130,10 +147,18 @@
     <!-- LEFT PANEL -->
     <div class="left">
         <div class="title">🚀 Hinglish Compiler</div>
-        <div class="subtitle">Write Hinglish → Get Python instantly</div>
+        <div class="subtitle">Write Hinglish → Get Code in Any Language</div>
 
         <form action="/result" method="POST">
             <textarea name="code" id="codeBox" oninput="autoResize(this)" placeholder="Type Hinglish code here...">{{ hinglish_code or "" }}</textarea>
+            <div class="input-box">
+            <label>💻 Select Output Language</label>
+            <select name="language">
+            <option value="python">Python</option>
+            <option value="c">C</option>
+            <option value="java">Java</option>
+            </select>
+</div>
         <div class="input-box">
             <label>🔤 Input Values (if using input())</label>
             <input 
@@ -151,7 +176,7 @@
 
         <div class="feature">
             <h3>⚡ Fast Conversion</h3>
-            <p>Instant Hinglish to Python transpilation</p>
+            <p>Instant Hinglish to Multi-Language Code Conversion</p>
         </div>
 
         <div class="feature">
