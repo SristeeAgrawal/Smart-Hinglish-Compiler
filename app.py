@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request
-from compiler import hinglish_to_python
+from compiler import compile_code
 import io
 import sys
 import traceback
@@ -15,92 +15,55 @@ def home():
 
 @app.route("/result", methods=["POST"])
 def result():
+    language = request.form.get("language", "python")
     hinglish_code = request.form["code"]
-    python_code = hinglish_to_python(hinglish_code)
+    generated_code = compile_code(hinglish_code, language)
 
     output = ""
 
+    # 🔹 Parser check
     parse_errors = simple_parser(hinglish_code)
-
     if parse_errors:
         output = "❌ Syntax Errors:\n\n" + "\n".join(parse_errors)
         return render_template(
             "result.html",
-            python_code=python_code,
+            generated_code=generated_code,
+            language=language,
             output=output,
             hinglish_code=hinglish_code
         )
 
     try:
-        # INPUT SUPPORT
         user_input = request.form.get("user_input", "")
-        input_values = user_input.split(",")
 
-        def mock_input(prompt=""):
-            return input_values.pop(0) if input_values else ""
+        # ✅ ONLY PYTHON EXECUTION
+        if language == "python":
+            old_stdout = sys.stdout
+            sys.stdout = io.StringIO()
 
-        # CAPTURE OUTPUT
-        old_stdout = sys.stdout
-        sys.stdout = io.StringIO()
+            exec(generated_code, {"input": lambda _: user_input})
 
-        exec(python_code, {"input": mock_input})
+            output = sys.stdout.getvalue()
+            sys.stdout = old_stdout
 
-        output = sys.stdout.getvalue()
-        sys.stdout = old_stdout
+        else:
+            output = f"⚠ Execution not supported for {language.upper()}"
 
     except Exception as e:
-        sys.stdout = old_stdout
-
         error_type = type(e).__name__
         error_msg = str(e)
 
-        line_no = getattr(e, 'lineno', None)
-
-        if line_no is None:
-            tb = traceback.extract_tb(e.__traceback__)
-            line_no = tb[-1].lineno if tb else 0
-        hinglish_lines = hinglish_code.split("\n")
-        if line_no <= len(hinglish_lines):
-            hinglish_line = line_no
-        else:
-            hinglish_line = f"Approx {line_no}"
-
-        #  PRIORITY: REAL ERRORS FIRST
-        if error_type in ["IndentationError", "SyntaxError"]:
-            output = f"""❌ {error_type}\n
-            📍 Line: {line_no}\n
-            💡 {error_msg}"""
-
-        else:
-            #  CUSTOM SUGGESTIONS
-            lines = hinglish_code.split("\n")
-            suggestions = []
-
-            for i, line in enumerate(lines, start=1):
-
-                if "likho" in line:
-                    suggestions.append(f"Line {i}: 'likho' use kiya hai → 'bolo' use karo")
-
-                if "bolo(" in line:
-                    inside = line.split("bolo(")[1].rstrip(")")
-                    if '"' not in inside and "'" not in inside:
-                        suggestions.append(f"Line {i}: Text ko \" \" me likho")
-
-                if "hai toh" in line:
-                    suggestions.append(f"Line {i}: 'hai toh' ki jagah ':' use karo")
-
-            if suggestions:
-                output = "❌ Error detected\n\n" + "\n".join(suggestions)
-            else:
-                output = f"❌ {error_type}\n📍 Line: {line_no}\n💡 {error_msg}"
+        output = f"❌ {error_type}\n💡 {error_msg}"
 
     return render_template(
         "result.html",
-        python_code=python_code,
+        generated_code=generated_code,
         output=output,
-        hinglish_code=hinglish_code
+        hinglish_code=hinglish_code,
+        language=language
     )
 
 
 if __name__ == "__main__":
     app.run(debug=True)
+
