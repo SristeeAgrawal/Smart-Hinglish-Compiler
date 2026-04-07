@@ -1,8 +1,9 @@
+
 import re
 
-# Token patterns
+#  Updated Token Patterns
 token_specification = [
-    ('KEYWORD', r'\b(bolo|agar|warna|jabtak)\b'),
+    ('KEYWORD', r'\b(bolo|likho|dikhao|agar|warna|jabtak|ke_liye|function|input_lo)\b'),
     ('NUMBER', r'\b\d+\b'),
     ('STRING', r'\".*?\"'),
     ('IDENTIFIER', r'\b[a-zA-Z_]\w*\b'),
@@ -11,11 +12,20 @@ token_specification = [
     ('SKIP', r'[ \t]+'),
 ]
 
+#  Combine all patterns into one regex
+tok_regex = '|'.join(f'(?P<{name}>{pattern})' for name, pattern in token_specification)
+
 def tokenize(code):
     tokens = []
-    for line in code.split("\n"):
-        for token_type, pattern in token_specification:
-            matches = re.findall(pattern, line)
-            for match in matches:
-                tokens.append((token_type, match))
+
+    for match in re.finditer(tok_regex, code):
+        kind = match.lastgroup
+        value = match.group()
+
+        if kind == "SKIP":
+            continue
+
+        tokens.append((kind, value))
+
     return tokens
+
