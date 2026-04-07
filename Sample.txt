@@ -64,3 +64,212 @@ jabtak x > 0:
 
 bolo("Hello " + naam)
 
+
+
+
+
+
+
+```text
+================ BASIC PRINT =================
+
+INPUT:
+bolo hello
+
+EXPECTED:
+Python: print("hello")
+C: printf("hello\n");
+Java: System.out.println("hello");
+
+
+================ SYNONYMS =================
+
+INPUT:
+likho hello world
+
+EXPECTED:
+Python: print("hello world")
+C: printf("hello world\n");
+Java: System.out.println("hello world");
+
+
+================ FUNCTION =================
+
+INPUT:
+function greet
+    bolo hello
+
+EXPECTED:
+Python:
+def greet():
+    print("hello")
+
+C:
+void greet() {
+    printf("hello\n");
+}
+
+Java:
+public static void greet() {
+    System.out.println("hello");
+}
+
+
+================ IF CONDITION =================
+
+INPUT:
+agar x > 5:
+    bolo greater
+
+EXPECTED:
+Python:
+if x > 5:
+    print("greater")
+
+C:
+if(x > 5) {
+    printf("greater\n");
+}
+
+Java:
+if(x > 5) {
+    System.out.println("greater");
+}
+
+
+================ WHILE LOOP =================
+
+INPUT:
+jabtak x < 10:
+    bolo x
+
+EXPECTED:
+Python:
+while x < 10:
+    print("x")
+
+C:
+while(x < 10) {
+    printf("x\n");
+}
+
+Java:
+while(x < 10) {
+    System.out.println("x");
+}
+
+
+================ FUNCTION + IF =================
+
+INPUT:
+function test
+    agar x > 10:
+        bolo big
+    warna:
+        bolo small
+
+EXPECTED:
+Python:
+def test():
+    if x > 10:
+        print("big")
+    else:
+        print("small")
+
+
+================ ERROR: MISSING COLON =================
+
+INPUT:
+agar x > 5
+    bolo error
+
+EXPECTED ERROR:
+Line 1: Missing ':' in condition
+
+
+================ ERROR: INDENTATION =================
+
+INPUT:
+agar x > 5:
+bolo wrong
+
+EXPECTED ERROR:
+Line 2: Indentation missing
+
+
+================ ERROR: FUNCTION NAME =================
+
+INPUT:
+function
+    bolo hi
+
+EXPECTED ERROR:
+Line 1: Function name missing
+
+
+================ MIXED CASE =================
+
+INPUT:
+Bolo Hello
+AGAR x > 5:
+    bolo ok
+
+EXPECTED:
+Python:
+print("Hello")
+if x > 5:
+    print("ok")
+
+
+================ INPUT HANDLING =================
+
+INPUT:
+input_lo name
+bolo name
+
+EXPECTED:
+Python:
+name = input()
+print(name)
+
+
+================ UNKNOWN COMMAND =================
+
+INPUT:
+random text test
+
+EXPECTED:
+Fallback:
+random text test
+
+
+================ MULTI-LINE =================
+
+INPUT:
+bolo start
+bolo middle
+bolo end
+
+EXPECTED:
+print("start")
+print("middle")
+print("end")
+
+
+================ EDGE CASE =================
+
+INPUT:
+
+
+EXPECTED:
+(no output)
+
+
+================ SPACING =================
+
+INPUT:
+    bolo spaced
+
+EXPECTED:
+    print("spaced")
+```
